@@ -1,0 +1,43 @@
+---
+title: "Exploratory data analysis"
+author: "Kristian Gårdhus Wichmann"
+date: "16 feb 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading the samples
+
+```{r, cache=TRUE}
+blog_sample <- readLines("blogs_sample")
+news_sample <- readLines("news_sample")
+tweets_sample <- readLines("tweets_sample")
+```
+
+## Make and clean corpuses
+Use the `tm` package to make corpuses.
+```{r, warning=FALSE, cache=TRUE}
+library(tm)
+blog_corpus <- Corpus(VectorSource(blog_sample))
+news_corpus <- Corpus(VectorSource(news_sample))
+tweets_corpus <- Corpus(VectorSource(tweets_sample))
+```
+
+Remove numbers, double whitespaces, and transform to lower case:
+```{r}
+transform <- function(corpus) {
+  tm_map(tm_map(tm_map(corpus, removeNumbers), stripWhitespace), tolower)
+}
+blog_corpus <- transform(blog_corpus)
+news_corpus <- transform(news_corpus)
+tweets_corpus <- transform(tweets_corpus)
+```
+
+## n-grams
+```{r, warning=FALSE}
+library(RWeka)
+ngramTokenizer <- function(x, n) NGramTokenizer(x, Weka_control(min = n, max = n))
+```
