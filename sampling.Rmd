@@ -1,0 +1,79 @@
+---
+title: "Capstone - Sampling the data"
+author: "Kristian Gårdhus Wichmann"
+date: "10 feb 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Handling large datasets - sampling
+The three data files are huge. Holding all of them in active memory at the same time will be different for most computers. To handle this, a random sample of 5% is chosen from each.
+
+### Blogs
+
+Load the blogs data:
+```{r}
+blogs <- readLines("en_US/en_US.blogs.txt")
+```
+
+Take sample:
+```{r}
+samplesize <- floor(length(blogs) * 0.05)
+blogs_sample <- sample(blogs, samplesize)
+```
+
+To free memory, delete the blogs:
+```{r}
+rm(blogs)
+```
+
+### News
+
+Load the blogs data:
+```{r}
+news <- readLines("en_US/en_US.news.txt")
+```
+
+The warning simply means that the file has no line break at the end. Take sample:
+```{r}
+samplesize <- floor(length(news) * 0.05)
+news_sample <- sample(news, samplesize)
+```
+
+Delete news:
+```{r}
+rm(news)
+```
+### Tweets
+
+Load the tweets data:
+```{r}
+tweets <- readLines("en_US/en_US.twitter.txt")
+```
+
+Inspect the lines mentioned in warnings:
+```{r}
+tweets[c(167155, 268547, 1274086, 1759032)]
+```
+
+There's nothing appearantly suspicious about these. Now a sample is chosen:
+```{r}
+set.seed(42)
+samplesize <- floor(length(tweets) * 0.05)
+tweets_sample <- sample(tweets, samplesize)
+```
+
+Delete tweets:
+```{r}
+rm(tweets)
+```
+
+## Save the data
+Finally, the three data sets are saved:
+```{r}
+write(blogs_sample, "blogs_sample")
+write(news_sample, "news_sample")
+write(tweets_sample, "tweets_sample")
+```
